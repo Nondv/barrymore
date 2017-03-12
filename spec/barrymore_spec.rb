@@ -7,7 +7,9 @@ describe Barrymore do
     def process_message(chat, text)
       message = Message.new(text: text, chat: chat)
 
-      if command_defined?(message)
+      if command_in_progress?(message)
+        continue_command(message)
+      elsif command_defined?(message)
         execute_command(message)
       else
         send_message chat_id: chat,
@@ -36,6 +38,41 @@ describe Barrymore do
     it 'works' do
       subject.process_message(1, '/start')
       expect(subject.sent).to include(chat_id: 1, text: 'bugaga')
+    end
+  end
+
+  context 'with multiple-steps command' do
+    before do
+      TestBot.define_command('/google') do |msg|
+        start_command_processing(msg)
+        send_message(chat_id: msg.chat, text: 'What do you want me to google?')
+      end
+
+      TestBot.define_command_continuation('/google') do |msg|
+        stop_command_processing(msg)
+        send_message(chat_id: msg.chat, text: "http://lmgtfy.com/?q=#{msg.text}")
+      end
+    end
+
+    it 'works' do
+      subject.process_message(1, '/google')
+      expect(subject.sent).to include(chat_id: 1, text: 'What do you want me to google?')
+      subject.process_message(1, 'hello')
+      expect(subject.sent).to include(chat_id: 1, text: 'http://lmgtfy.com/?q=hello')
+    end
+
+    context 'with different chats' do
+      before do
+        subject.process_message(1, '/google')
+        subject.process_message(2, 'hello')
+        subject.process_message(1, 'hello')
+      end
+
+      it 'doesnt mess them up' do
+        expect(subject.sent[0]).to eq(chat_id: 1, text: 'What do you want me to google?')
+        expect(subject.sent[1]).to eq(chat_id: 2, text: 'missing')
+        expect(subject.sent[2]).to eq(chat_id: 1, text: 'http://lmgtfy.com/?q=hello')
+      end
     end
   end
 end
