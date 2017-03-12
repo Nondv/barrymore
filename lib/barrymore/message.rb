@@ -5,9 +5,9 @@ module Barrymore
     attr_reader :chat, :text, :data
 
     def initialize(chat:, text:, data: nil)
-      self.chat = chat.clone.freeze
-      self.text = text.clone.freeze
-      self.data = data.clone.freeze if data
+      self.chat = chat.freeze
+      self.text = text.freeze
+      self.data = data.freeze if data
     end
 
     private
