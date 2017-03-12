@@ -1,7 +1,8 @@
 # Barrymore
 
-Barrymore - is a DSL for defining chat bot commands (like telegram bot
-commands).
+[![Build Status](https://travis-ci.org/Nondv/barrymore.svg?branch=master)](https://travis-ci.org/Nondv/barrymore)
+
+Barrymore is a DSL for defining chat bot commands (like telegram bot commands).
 To create telegram bot you will need to use bot api gem (like `telegram-bot-ruby`).
 
 ## Installation
@@ -22,7 +23,7 @@ Or install it yourself as:
 
 ## Usage
 
-This is an example of usage Barrymore for telegram bot (using gem [`telegram-bot-ruby`](https://github.com/atipugin/telegram-bot-ruby).
+This is an example of usage Barrymore for telegram bot using gem [`telegram-bot-ruby`](https://github.com/atipugin/telegram-bot-ruby).
 But Barrymore can be used for whatever chats you want.
 For example, [specs](spec/barrymore_spec.rb)  are written without any
 chat at all.
