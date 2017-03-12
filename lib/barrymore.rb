@@ -1,5 +1,5 @@
 require 'barrymore/version'
+require 'barrymore/message'
 
 module Barrymore
-  # Your code goes here...
 end
