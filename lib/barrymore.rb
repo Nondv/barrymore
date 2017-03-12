@@ -1,4 +1,4 @@
-require "barrymore/version"
+require 'barrymore/version'
 
 module Barrymore
   # Your code goes here...
