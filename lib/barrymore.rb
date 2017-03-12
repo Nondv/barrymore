@@ -31,11 +31,24 @@ module Barrymore
     end
 
     def start_command_processing(msg)
+      # TODO: use chat_data ?
       commands_in_progress[msg.chat] = msg.text
     end
 
     def stop_command_processing(msg)
       commands_in_progress.delete(msg.chat)
+    end
+
+    # arg [Object] - arg.chat or arg itself will be used
+    def set_chat_data(arg, data)
+      chat = arg.respond_to?(:chat) ? arg.chat : arg
+      barrymore_chats_data[chat] = chat_data(arg).merge(data).freeze
+    end
+
+    # arg [Object] - arg.chat or arg itself will be used
+    def chat_data(arg)
+      chat = arg.respond_to?(:chat) ? arg.chat : arg
+      barrymore_chats_data[chat] ||= {}.freeze
     end
 
     def continue_command(msg)
@@ -57,6 +70,10 @@ module Barrymore
     end
 
     private
+
+    def barrymore_chats_data
+      @barrymore_chats_data ||= {}
+    end
 
     def barrymore_commands
       self.class.send :barrymore_commands

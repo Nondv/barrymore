@@ -75,4 +75,27 @@ describe Barrymore do
       end
     end
   end
+
+  describe 'chat data' do
+    before do
+      TestBot.define_command('/start') do |msg|
+        set_chat_data(msg, Time.now => 'hey')
+        send_message(chat_id: msg.chat, text: 'bugaga')
+      end
+    end
+
+    it 'works' do
+      subject.process_message(1, '/start')
+      expect(subject.sent[0]).to eq(chat_id: 1, text: 'bugaga')
+      expect(subject.chat_data(1).values).to eq %w(hey)
+      expect(subject.chat_data(1).keys[0]).to be_a Time
+    end
+
+    it 'merges multiple sets' do
+      subject.process_message(1, '/start')
+      subject.process_message(1, '/start')
+      expect(subject.chat_data(1).values).to eq %w(hey hey)
+      expect(subject.chat_data(1).keys.all? { |k| k.is_a? Time }).to be true
+    end
+  end
 end
